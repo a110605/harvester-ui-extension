@@ -302,7 +302,7 @@ export function init($plugin, store) {
     resource:       MONITORING.ALERTMANAGERCONFIG,
     resourceDetail: HCI.ALERTMANAGERCONFIG,
     resourceEdit:   HCI.ALERTMANAGERCONFIG,
-    canYaml: false 
+    canYaml:        false
   });
 
   virtualType({
@@ -475,7 +475,9 @@ export function init($plugin, store) {
     exact: false
   });
 
-  configureType(HCI.SCHEDULE_VM_BACKUP, { showListMasthead: false, showConfigView: false, canYaml: false  });
+  configureType(HCI.SCHEDULE_VM_BACKUP, {
+    showListMasthead: false, showConfigView: false, canYaml: false
+  });
   virtualType({
     labelKey:   'harvester.schedule.label',
     name:       HCI.SCHEDULE_VM_BACKUP,
@@ -489,7 +491,9 @@ export function init($plugin, store) {
     ifHaveType: HCI.SCHEDULE_VM_BACKUP,
   });
 
-  configureType(HCI.BACKUP, { showListMasthead: false, showConfigView: false, canYaml: false  });
+  configureType(HCI.BACKUP, {
+    showListMasthead: false, showConfigView: false, canYaml: false
+  });
   virtualType({
     labelKey:   'harvester.backup.label',
     name:       HCI.BACKUP,
@@ -549,7 +553,7 @@ export function init($plugin, store) {
     resource:       VOLUME_SNAPSHOT,
     resourceDetail: HCI.SNAPSHOT,
     resourceEdit:   HCI.SNAPSHOT,
-    canYaml: false
+    canYaml:        false
   });
   headers(HCI.SNAPSHOT, [STATE, NAME_COL, NAMESPACE_COL, SNAPSHOT_TARGET_VOLUME, AGE]);
   virtualType({
@@ -573,7 +577,7 @@ export function init($plugin, store) {
     resource:       HCI.BACKUP,
     resourceDetail: HCI.VM_SNAPSHOT,
     resourceEdit:   HCI.VM_SNAPSHOT,
-    canYaml: false
+    canYaml:        false
   });
 
   virtualType({
@@ -609,7 +613,7 @@ export function init($plugin, store) {
     resource:       CONFIG_MAP,
     resourceDetail: HCI.CLOUD_TEMPLATE,
     resourceEdit:   HCI.CLOUD_TEMPLATE,
-    canYaml: false
+    canYaml:        false
   });
 
   virtualType({
@@ -646,7 +650,7 @@ export function init($plugin, store) {
     resource:           SECRET,
     resourceDetail:     HCI.SECRET,
     resourceEdit:       HCI.SECRET,
-    canYaml:        false,
+    canYaml:            false,
     notFilterNamespace: ['cattle-monitoring-system', 'cattle-logging-system']
   });
 
@@ -687,7 +691,7 @@ export function init($plugin, store) {
     resourceDetail: HCI.STORAGE,
     resourceEdit:   HCI.STORAGE,
     isCreatable:    true,
-    canYaml: false,
+    canYaml:        false,
   });
   virtualType({
     labelKey:   'harvester.storage.title',
@@ -719,7 +723,7 @@ export function init($plugin, store) {
   configureType(HCI.PCI_DEVICE, {
     isCreatable:                false,
     hiddenNamespaceGroupButton: true,
-    canYaml: false,
+    canYaml:                    false,
     listGroups:                 [
       {
         icon:       'icon-list-grouped',
@@ -755,7 +759,7 @@ export function init($plugin, store) {
   configureType(HCI.SR_IOV, {
     isCreatable:                false,
     hiddenNamespaceGroupButton: true,
-    canYaml: false,
+    canYaml:                    false,
   });
 
   virtualType({
@@ -775,7 +779,7 @@ export function init($plugin, store) {
   configureType(HCI.SR_IOVGPU_DEVICE, {
     isCreatable:                false,
     hiddenNamespaceGroupButton: true,
-    canYaml: false,
+    canYaml:                    false,
   });
 
   virtualType({
@@ -794,7 +798,7 @@ export function init($plugin, store) {
   configureType(HCI.VGPU_DEVICE, {
     isCreatable:                false,
     hiddenNamespaceGroupButton: true,
-    canYaml: false,
+    canYaml:                    false,
     listGroups:                 [
       {
         icon:       'icon-cluster',
@@ -823,7 +827,7 @@ export function init($plugin, store) {
   configureType(HCI.USB_DEVICE, {
     isCreatable:                false,
     hiddenNamespaceGroupButton: true,
-    canYaml: false,
+    canYaml:                    false,
     listGroups:                 [
       {
         icon:       'icon-list-grouped',
@@ -846,7 +850,7 @@ export function init($plugin, store) {
     isCreatable: false,
     isRemovable: false,
     showState:   false,
-    canYaml: false,
+    canYaml:     false,
   });
 
   virtualType({
