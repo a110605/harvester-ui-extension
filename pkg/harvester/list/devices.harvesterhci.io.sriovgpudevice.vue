@@ -19,6 +19,8 @@ export default {
     ResourceTable,
   },
 
+  inheritAttrs: false,
+
   async fetch() {
     const inStore = this.$store.getters['currentProduct'].inStore;
 
