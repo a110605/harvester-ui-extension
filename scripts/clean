@@ -2,4 +2,4 @@
 set -e
 
 cd $(dirname $0)/..
-rm -rf dist node_modules/.cache pkg/harvester/node_modules/.cache
+rm -rf dist node_modules/.cache pkg/harvester/node_modules/
