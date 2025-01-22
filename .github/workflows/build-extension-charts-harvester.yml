@@ -88,7 +88,7 @@ jobs:
         shell: bash
         id: build_script
         run: |
-          publish="yarn publish-pkgs -s ${{ github.repository }} -b ${{ inputs.target_branch }}"
+          publish="yarn publish-pkgs -f -s ${{ github.repository }} -b ${{ inputs.target_branch }}"
 
           if [[ -n "${{ inputs.tagged_release }}" ]]; then
             publish="$publish -t ${{ inputs.tagged_release }}"
