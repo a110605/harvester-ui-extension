@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+cd $(dirname $0)/..
+yarn cache clean
+rm -rf dist-pkg node_modules/.cache pkg/harvester/node_modules/ pkg/harvester/.shell
+sync
