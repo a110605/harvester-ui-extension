@@ -1,6 +1,6 @@
 {
   "name": "harvester-ui-extension",
-  "version": "1.5.0",
+  "version": "1.7.1",
   "private": false,
   "engines": {
     "node": ">=20.0.0"
@@ -39,7 +39,7 @@
     "lint": "./node_modules/.bin/eslint --max-warnings 0 --ext .js,.ts,.vue .",
     "build-pkg": "./node_modules/@rancher/shell/scripts/build-pkg.sh",
     "serve-pkgs": "./node_modules/@rancher/shell/scripts/serve-pkgs",
-    "publish-pkgs": "./node_modules/@rancher/shell/scripts/extension/publish",
+    "publish-pkgs": "yarn clean && ./node_modules/@rancher/shell/scripts/extension/publish",
     "parse-tag-name": "./node_modules/@rancher/shell/scripts/extension/parse-tag-name"
   },
   "devDependencies": {
