@@ -2,4 +2,6 @@
 set -e
 
 cd $(dirname $0)/..
-rm -rf dist node_modules/.cache pkg/harvester/node_modules/
+yarn cache clean
+rm -rf dist-pkg node_modules/.cache pkg/harvester/node_modules/ pkg/harvester/.shell
+sync
