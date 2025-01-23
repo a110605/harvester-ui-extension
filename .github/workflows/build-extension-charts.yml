@@ -17,7 +17,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
+      - name: clean yarn cache
+        run: yarn cache clean
       - name: Run tests
         uses: ./.github/actions/lint
   build-extension-charts:
