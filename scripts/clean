@@ -2,6 +2,11 @@
 set -e
 
 cd $(dirname $0)/..
-yarn cache clean --all
-rm -rf dist-pkg/ node_modules/.cache pkg/harvester/node_modules/ pkg/harvester/.shell assets/ extensions/ charts/ tmp/ index.yaml
-sync
+
+#yarn cache clean --all
+if [ -e "pkg/harvester/.shell" ]; then
+  echo "Found pkg/harvester/.shell, unlinking it."
+  unlink pkg/harvester/.shell
+fi
+rm -rf dist-pkg/ pkg/harvester/node_modules
+rm -rf assets/ extensions/ charts/ tmp/ index.yaml

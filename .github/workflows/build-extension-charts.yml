@@ -24,7 +24,7 @@ jobs:
   build-extension-charts:
     needs:
       - lint
-    uses: ./.github/workflows/build-extension-charts-harvester.yml
+    uses: rancher/dashboard/.github/workflows/build-extension-charts.yml@master
     permissions:
       actions: write
       contents: write
