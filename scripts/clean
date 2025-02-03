@@ -6,10 +6,10 @@ pwd
 ls -al
 ls -al pkg/harvester/
 #yarn cache clean --all
-
-if [ -e "pkg/harvester/.shell" ]; then
-  echo "Found pkg/harvester/.shell, unlinking it."
-  unlink pkg/harvester/.shell
-fi
-rm -rf dist-pkg/ pkg/harvester/node_modules
+cat node_modules/@rancher/shell/package.json
+# if [ -e "pkg/harvester/.shell" ]; then
+#   echo "Found pkg/harvester/.shell, unlinking it."
+#   unlink pkg/harvester/.shell
+# fi
+#rm -rf dist-pkg/ pkg/harvester/node_modules
 #rm -rf assets/ extensions/ charts/ tmp/ index.yaml

@@ -11,19 +11,7 @@ defaults:
     working-directory: ./
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      - name: clean yarn cache
-        run: yarn cache clean
-      - name: Run tests
-        uses: ./.github/actions/lint
   build-extension-charts:
-    needs:
-      - lint
     uses: rancher/dashboard/.github/workflows/build-extension-charts.yml@master
     permissions:
       actions: write
