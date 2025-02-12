@@ -14,3 +14,4 @@ dist-pkg
 pkg/harvester/index.ts
 pkg/harvester/store/*
 scripts/pkgfile.js
+pkg/harvester/models/harvester/schema.js
