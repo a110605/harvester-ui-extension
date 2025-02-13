@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+cd $(dirname $0)/..
+
+CURRNETPATH=$(pwd)
+echo "abc: ${CURRNETPATH}"
+
+rm -rf dist-pkg node_modules/.cache pkg/harvester/node_modules/.cache
