@@ -34,7 +34,11 @@ export default {
     },
 
     size() {
-      return this.value?.status?.restoreSize;
+      if (this.value?.status?.restoreSize) {
+        return `${ this.value?.status?.restoreSize }B`;
+      }
+
+      return '-';
     },
 
     isImageVolume() {

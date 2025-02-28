@@ -134,8 +134,15 @@ export default {
   watch: {
     value: {
       handler(neu) {
-        const rows = clone(neu).map((V) => {
-          if (!this.isCreate && V.source !== SOURCE_TYPE.CONTAINER && !V.newCreateId) {
+        console.log('this.mode=', this.mode);
+        // console.log('watch value VMvolume neu[0] =', neu[0]);
+        const newValue = clone(neu);
+
+        // console.log('🚀 ~ handler ~ newValue[0]:', newValue[0]);
+
+        const newRows = newValue.map((V) => {
+          if (V.source === 'Virtual Machine Image') console.log('V= ', V);
+          if (this.isEdit && V.source !== SOURCE_TYPE.CONTAINER && !V.newCreateId) {
             V.to = {
               name:   `${ HARVESTER_PRODUCT }-c-cluster-resource-namespace-id`,
               params: {
@@ -152,7 +159,8 @@ export default {
           return V;
         });
 
-        this['rows'] = rows;
+        this.rows = newRows;
+        // console.log('watch new this.rows =', this.rows);
       },
       deep:      true,
       immediate: true,
@@ -388,7 +396,7 @@ export default {
               :label="ucFirst(value.volumeBackups.error.message)"
             />
             <Banner
-              v-if="isLonghornV2(volume) && !isView"
+              v-if="!isView && isLonghornV2(volume)"
               color="warning"
               :label="t('harvester.volume.longhorn.disableResize')"
             />

@@ -558,7 +558,7 @@ export default {
             volumeName,
             container,
             accessMode,
-            size:       `${ formatSize }Gi`,
+            size:       `${ formatSize } GiB`,
             volumeMode: volumeMode || this.customVolumeMode,
             image,
             type,
@@ -642,6 +642,7 @@ export default {
     },
 
     parseDiskRows(disk) {
+      console.log('🚀 ~ parseDiskRows ~ disk:', disk);
       const disks = [];
       const volumes = [];
       const diskNameLables = [];

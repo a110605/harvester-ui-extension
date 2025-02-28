@@ -151,7 +151,7 @@ export default {
           formatter:     'Si',
           formatterOpts: {
             opts: {
-              increment: 1024, addSuffix: true, maxExponent: 3, minExponent: 3, suffix: 'i',
+              increment: 1024, addSuffix: true, maxExponent: 3, minExponent: 3, suffix: 'iB',
             },
             needParseSi: true
           },

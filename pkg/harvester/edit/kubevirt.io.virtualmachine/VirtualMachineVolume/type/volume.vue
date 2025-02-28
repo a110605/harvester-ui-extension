@@ -97,6 +97,12 @@ export default {
       return this.$store.getters[`harvester/all`](STORAGE_CLASS) || [];
     },
 
+    diskSize() {
+      const size = this.value?.size || '0';
+
+      return `${ size }B`;
+    },
+
     storageClassOptions() {
       return this.storageClasses.filter((s) => !s.parameters?.backingImage).map((s) => {
         const label = s.isDefault ? `${ s.name } (${ this.t('generic.default') })` : s.name;
@@ -246,7 +252,7 @@ export default {
       >
         <InputOrDisplay
           :name="t('harvester.fields.size')"
-          :value="value.size"
+          :value="diskSize"
           :mode="mode"
         >
           <UnitInput

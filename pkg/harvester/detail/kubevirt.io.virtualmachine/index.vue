@@ -110,7 +110,7 @@ export default {
       return formatSi(this.value.snapshotSizeQuota, {
         increment: 1024,
         addSuffix: true,
-        suffix:    'i',
+        suffix:    'iB',
       });
     },
 

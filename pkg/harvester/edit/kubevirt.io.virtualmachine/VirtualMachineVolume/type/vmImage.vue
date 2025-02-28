@@ -135,7 +135,7 @@ export default {
     diskSize() {
       const size = this.value?.size || '0';
 
-      return `${ size.replace('Gi', '') } GB`;
+      return `${ size.replace('Gi', '') } GiB`;
     },
 
     imageVirtualSizeInByte() {
@@ -143,13 +143,16 @@ export default {
     },
 
     diskSizeInByte() {
+      console.log('diskSizeInByte this.value=', this.value);
+
       return parseSi(this.value?.size || '0');
     },
 
     showDiskTooSmallError() {
-      if (!this.thirdPartyStorageEnabled ) {
+      if (!this.thirdPartyStorageEnabled) {
         return false;
       }
+      console.log('this.diskSizeInByte=', this.diskSizeInByte);
 
       return this.imageVirtualSizeInByte > this.diskSizeInByte;
     }
@@ -183,6 +186,7 @@ export default {
             minExponent: 3,
           });
 
+          console.log('pvcsResource watch formatSize=', formatSize);
           this.value.size = `${ formatSize }Gi`;
         }
       },
@@ -190,7 +194,6 @@ export default {
       immediate: true
     },
   },
-
   methods: {
     imageOptionLabel(image) {
       let label = `${ image.metadata.namespace }/${ image.spec.displayName }`;
@@ -320,7 +323,7 @@ export default {
       >
         <InputOrDisplay
           :name="t('harvester.fields.size')"
-          :value="value.size"
+          :value="diskSize"
           :mode="mode"
         >
           <UnitInput

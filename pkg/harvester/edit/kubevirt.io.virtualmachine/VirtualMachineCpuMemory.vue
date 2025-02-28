@@ -41,7 +41,7 @@ export default {
     },
 
     memoryDisplay() {
-      return `${ this.localMemory }`;
+      return `${ this.localMemory }B`;
     }
   },
 
