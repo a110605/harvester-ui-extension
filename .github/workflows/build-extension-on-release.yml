@@ -14,18 +14,18 @@ jobs:
   setup-release-tag:
     runs-on: ubuntu-latest
     outputs:
-      target_tag: ${{ steps.determine_tag.outputs.target_tag }}
+      release_tag: ${{ steps.determine_tag.outputs.release_tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Determine target branch
+      - name: Determine release tag
         id: determine_tag
         run: |
           if [[ "${{ github.ref_name }}" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
-            TARGET_TAG="harvester-${BASH_REMATCH[1]}"
-            echo "${TARGET_TAG}"
-            echo "target_tag=${TARGET_TAG}" >> $GITHUB_OUTPUT
+            RELEASE_TAG="harvester-${BASH_REMATCH[1]}"
+            echo "${RELEASE_TAG}"
+            echo "release_tag=${RELEASE_TAG}" >> $GITHUB_OUTPUT
           else
             echo "Error: invalid tag format." && exit 1
           fi
@@ -50,4 +50,4 @@ jobs:
       pages: write
     with:
       target_branch: gh-pages
-      tagged_release: ${{ needs.determine_tag.outputs.target_tag }}
+      tagged_release: '${{ needs.determine_tag.outputs.release_tag }}'
