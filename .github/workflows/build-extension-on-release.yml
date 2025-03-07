@@ -50,4 +50,4 @@ jobs:
       pages: write
     with:
       target_branch: gh-pages
-      tagged_release: '${{ needs.determine_tag.outputs.release_tag }}'
+      tagged_release: '${{ needs.setup-release-tag.outputs.release_tag }}'
