@@ -40,23 +40,8 @@ export default {
       spec: { image: '' }
     });
 
-    const imageValue = await this.$store.dispatch('harvester/create', {
-      type:     HCI.IMAGE,
-      metadata: {
-        name:         '',
-        namespace:    'harvester-system',
-        generateName: 'image-',
-        annotations:  {}
-      },
-      spec: {
-        sourceType:  UPLOAD,
-        displayName: '',
-        checksum:    ''
-      },
-    });
-
     this.value = value;
-    this.imageValue = imageValue;
+    await this.initImageValue();
   },
 
   beforeUnmount() {
@@ -74,6 +59,7 @@ export default {
       imageSource:      IMAGE_METHOD.NEW,
       sourceType:       UPLOAD,
       uploadController: null,
+      uploadResult:     null,
       imageValue:       null,
       errors:           [],
       enableLogging:    true,
@@ -132,6 +118,10 @@ export default {
       return this.sourceType === UPLOAD && this.fileName !== '';
     },
 
+    showUploadSuccessBanner() {
+      return this.showUploadingWarningBanner === false && this.uploadResult?._status === 200;
+    },
+
     showUploadingWarningBanner() {
       return this.fileName !== '' && this.uploadProgress !== 100;
     },
@@ -149,6 +139,23 @@ export default {
       this.$router.push({
         name:   this.doneRoute,
         params: { resource: HCI.SETTING, product: 'harvester' }
+      });
+    },
+
+    async initImageValue() {
+      this.imageValue = await this.$store.dispatch('harvester/create', {
+        type:     HCI.IMAGE,
+        metadata: {
+          name:         '',
+          namespace:    'harvester-system',
+          generateName: 'image-',
+          annotations:  {}
+        },
+        spec: {
+          sourceType:  UPLOAD,
+          displayName: '',
+          checksum:    ''
+        },
       });
     },
 
@@ -199,7 +206,7 @@ export default {
         this.done();
         buttonCb(true);
       } catch (e) {
-        this.errors = exceptionToErrorsArray(e);
+        this.errors = [e?.message] || exceptionToErrorsArray(e);
         buttonCb(false);
       }
     },
@@ -227,16 +234,28 @@ export default {
         this.uploadController = new AbortController();
         const signal = this.uploadController.signal;
 
-        await res.uploadImage(file, { signal });
+        this.uploadResult = await res.uploadImage(file, { signal });
       } catch (e) {
-        this.errors = exceptionToErrorsArray(e);
+        if (e?.code === 'ERR_NETWORK') {
+          this.errors.push(this.$store.getters['i18n/t']('harvester.setting.upgrade.networkError'));
+        } else if (e?.code === 'ERR_CANCELED') {
+          this.errors.push(this.$store.getters['i18n/t']('harvester.setting.upgrade.cancelUpload'));
+        } else {
+          this.errors = [e?.message] || exceptionToErrorsArray(e);
+        }
+        this.file = {};
+        this.uploadImageId = '';
       }
     },
 
     async handleFileUpload() {
-      this.file = this.$refs.file.files[0];
+      await this.initImageValue();
+      this.uploadImageId = '';
       this.errors = [];
-      await this.uploadFile(this.file);
+      this.file = this.$refs.file?.files[0];
+      if (this.file) {
+        await this.uploadFile(this.file);
+      }
     },
 
     selectFile() {
@@ -301,13 +320,19 @@ export default {
           t('harvester.upgradePage.selectExisting'),
         ]"
       />
+      <UpgradeInfo />
+      <Banner
+        v-if="showUploadSuccessBanner"
+        color="success"
+        class="mt-0 mb-30"
+        :label="t('harvester.setting.upgrade.uploadSuccess', { name: file.name })"
+      />
       <Banner
         v-if="showUploadingWarningBanner"
         color="warning"
+        class="mt-0 mb-30"
         :label="t('harvester.image.warning.osUpgrade.uploading', { name: file.name })"
       />
-      <UpgradeInfo />
-
       <div v-if="uploadImage">
         <LabeledInput
           v-model:value.trim="imageValue.spec.displayName"
