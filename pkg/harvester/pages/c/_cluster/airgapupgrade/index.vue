@@ -74,6 +74,7 @@ export default {
       imageSource:      IMAGE_METHOD.NEW,
       sourceType:       UPLOAD,
       uploadController: null,
+      uploadResult:     null,
       imageValue:       null,
       errors:           [],
       enableLogging:    true,
@@ -132,11 +133,16 @@ export default {
       return this.sourceType === UPLOAD && this.fileName !== '';
     },
 
+    // showUploadResultBanner() {
+    //   return this.uploadProgress === 100 && this.fileName !== '';
+    // },
+
     showUploadingWarningBanner() {
       return this.fileName !== '' && this.uploadProgress !== 100;
     },
 
     disableUploadButton() {
+
       return this.sourceType === UPLOAD && this.fileName !== '' && this.uploadProgress !== 100;
     },
   },
@@ -199,7 +205,7 @@ export default {
         this.done();
         buttonCb(true);
       } catch (e) {
-        this.errors = exceptionToErrorsArray(e);
+        this.errors = [e?.message] || exceptionToErrorsArray(e);
         buttonCb(false);
       }
     },
@@ -222,14 +228,25 @@ export default {
 
       try {
         const res = await this.imageValue.save();
-
+       
         this.uploadImageId = res.id;
         this.uploadController = new AbortController();
         const signal = this.uploadController.signal;
 
-        await res.uploadImage(file, { signal });
+        this.uploadResult = await res.uploadImage(file, { signal });
+
+        console.log("🚀 ~ uploadFile ~ this.uploadResult:", this.uploadResult)
       } catch (e) {
-        this.errors = exceptionToErrorsArray(e);
+           console.log("🚀 ~ upload image catch e = ", e)
+        if(e?.code === "ERR_NETWORK"){
+          this.errors.push(this.$store.getters['i18n/t']('harvester.setting.upgrade.networkError'));
+        } else if(e?.code === "ERR_CANCELED"){
+          this.errors.push(this.$store.getters['i18n/t']('harvester.setting.upgrade.cancelUpload'));
+        } else{
+           this.errors = [e?.message] || exceptionToErrorsArray(e);
+        }
+        this.file = {};
+        this.uploadImageId = '';
       }
     },
 
