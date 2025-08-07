@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g., 1.6.0-rc3)'
+        description: 'Release version (e.g. 1.6.0-rc5)'
         required: true
         type: string
 
@@ -47,13 +47,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
-      - name: Create draft release
+      - name: Create release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ github.event.inputs.version }}
-          release_name: Release v${{ github.event.inputs.version }}
+          release_name: v${{ github.event.inputs.version }}
           body_path: CHANGELOG.md
-          draft: true
-          prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-beta') || contains(github.event.inputs.version, '-alpha') }} 
+          draft: false
+          prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-dev') }} 
