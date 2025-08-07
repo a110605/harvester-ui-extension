@@ -5,14 +5,6 @@ on:
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.5.1, v1.6.0-rc5
 
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       version:
-#         description: 'Release version (e.g. 1.6.0-rc5)'
-#         required: true
-#         type: string
-
 jobs:
   create-draft-release:
     runs-on: ubuntu-latest
@@ -57,8 +49,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ github.event.inputs.version }}
-          release_name: v${{ github.event.inputs.version }}
+          tag_name: v${{ github.ref_nam }}
+          release_name: v${{ github.ref_name }}
           body_path: CHANGELOG.md
           draft: false
-          prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-dev') }} 
+          prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-dev') }} 
