@@ -1,12 +1,17 @@
 name: Create Draft Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version (e.g. 1.6.0-rc5)'
-        required: true
-        type: string
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.5.1, v1.6.0-rc5
+
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       version:
+#         description: 'Release version (e.g. 1.6.0-rc5)'
+#         required: true
+#         type: string
 
 jobs:
   create-draft-release:
