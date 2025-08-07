@@ -49,8 +49,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ github.ref_nam }}
-          release_name: v${{ github.ref_name }}
+          tag_name: ${{ github.ref_nam }}
+          release_name: ${{ github.ref_name }}
           body_path: CHANGELOG.md
           draft: false
           prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-dev') }} 
