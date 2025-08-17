@@ -1,8 +1,16 @@
 name: "[PR Management] Auto Assign Reviewer & Assignee"
 
+# on:
+#   pull_request_target:
+#     types: [opened, ready_for_review]
+
 on:
-  pull_request_target:
-    types: [opened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'PR title'
+        required: true
+        type: string
 
 defaults:
   run:
@@ -28,9 +36,9 @@ jobs:
       - name: Extract PR label
         id: extract_pr_label
         env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_TITLE: ${{ github.event.inputs.title }}
         run: |
-          PR_LABEL=$(node ./scripts/extract-pr-label.js "${{ github.event.pull_request.title }}")
+          PR_LABEL=$(node ./scripts/extract-pr-label.js "${{ github.event.inputs.title }}")
           echo "script_result=$PR_LABEL" >> $GITHUB_OUTPUT
       - name: Set PR label
         run: |
