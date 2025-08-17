@@ -1,4 +1,4 @@
-name: "[PR Management] Auto Assign Reviewer & Assignee & PR label"
+name: "[PR Management] Auto Assign Reviewer & Assignee & PR label && Andy Lee"
 
 on:
   pull_request_target:
