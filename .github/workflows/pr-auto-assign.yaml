@@ -37,7 +37,7 @@ jobs:
         id: extract_pr_label
         env:
           PR_TITLE: ${{ github.event.inputs.title }}
-        run: node ./scripts/extract-pr-label.js "${{ github.event.inputs.title }}"
+        run: node .github/workflows/scripts/extract-pr-label.js "${{ github.event.inputs.title }}"
       - name: Set PR label
         run: |
           gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }}  --add-label "${{ steps.extract_pr_label.outputs.script_result }}"
