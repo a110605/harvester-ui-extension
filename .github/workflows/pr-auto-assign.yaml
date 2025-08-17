@@ -22,6 +22,7 @@ jobs:
       - name: Extract PR label
         id: extract_pr_label
         run: |
+          pwd
           PR_LABEL=$(node scripts/extract-pr-label.js "${{ github.event.pull_request.title }}")
           echo "script_result=$PR_LABEL" >> $GITHUB_OUTPUT
       - name: Set PR label
