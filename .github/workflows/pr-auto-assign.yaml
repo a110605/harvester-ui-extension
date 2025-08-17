@@ -1,4 +1,4 @@
-name: "[PR Management] Auto Assign Reviewer & Assignee"
+name: "[PR Management] Auto Assign Reviewer & Assignee & PR label"
 
 on:
   pull_request_target:
