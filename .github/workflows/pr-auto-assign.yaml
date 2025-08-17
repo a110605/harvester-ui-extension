@@ -4,10 +4,10 @@ on:
   pull_request_target:
     types: [opened, ready_for_review]
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ./
+# defaults:
+#   run:
+#     shell: bash
+#     working-directory: ./
 
 permissions:
   pull-requests: write
@@ -25,18 +25,12 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Extract PR label
+      - name: Set PR Label
         id: extract_pr_label
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          PR_LABEL=$(node scripts/extract-pr-label.js "${{ github.event.pull_request.title }}")
-          echo "script_result=$PR_LABEL" >> $GITHUB_OUTPUT
-      - name: Set PR label
-        run: |
-          gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }}  --add-label "${{ steps.extract_pr_label.outputs.script_result }}"
+          PR_LABEL=$(node ./scripts/extract-pr-label.js "${{ github.event.pull_request.title }}")
+          echo "PR_LABEL=$PR_LABEL" >> $GITHUB_OUTPUT
+          gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }}  --add-label "$PR_LABEL"
+      # - name: Set PR label
+      #   run: |
+      #     gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }}  --add-label "${{ steps.extract_pr_label.outputs.script_result }}"
