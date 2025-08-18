@@ -12,6 +12,7 @@ const LABEL_MAP = {
   refactor:    'refactor',
   style:       'style',
   chore:       'chore',
+  ci:          'ci',
   other:       'other'
 };
 const prTitle = process.argv[2];

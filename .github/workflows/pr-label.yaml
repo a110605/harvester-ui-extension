@@ -1,5 +1,4 @@
 name: "[PR Management] Add PR Label"
-
 # on:
 #   pull_request_target:
 #     types: [opened, reopened]
@@ -13,7 +12,6 @@ on:
         description: 'PR title'
         required: true
         type: string
-    
 
 permissions:
   pull-requests: write
@@ -30,13 +28,15 @@ jobs:
       - name: Setup Nodejs with yarn caching
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: yarn
       - name: Extract PR label
         id: extract_pr_label
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_TITLE: ${{ github.event.inputs.title }}
-        run: pwd && ls && node ./scripts/extract-pr-label.js "${{ github.event.inputs.title }}"
-      - name: Set PR label
         run: |
-          gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }}  --add-label "${{ steps.extract_pr_label.outputs.script_result }}"
+          ls
+          PR_LABEL=$(node ./scripts/extract-pr-label.js "${{ github.event.inputs.title }}")
+          echo "$PR_LABEL"
+          gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }}  --add-label "$PR_LABEL"
