@@ -1,17 +1,18 @@
 name: "[PR Management] Add PR Label"
-# on:
-#   pull_request_target:
-#     types: [opened, reopened]
-#     branches:
-#       - main
-#       - 'release-harvester-v*'
+
 on:
-  workflow_dispatch:
-    inputs:
-      title:
-        description: 'PR title'
-        required: true
-        type: string
+  pull_request_target:
+    types: [opened, reopened]
+    branches:
+      - main
+      - 'release-harvester-v*'
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       title:
+#         description: 'PR title'
+#         required: true
+#         type: string
 
 permissions:
   pull-requests: write
@@ -30,13 +31,12 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - name: Extract PR label
-        id: extract_pr_label
+      - name: Set PR label
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_TITLE: ${{ github.event.inputs.title }}
+          # PR_TITLE: ${{ github.event.inputs.title }}
         run: |
           ls
           PR_LABEL=$(node ./scripts/extract-pr-label.js "${{ github.event.inputs.title }}")
-          echo "$PR_LABEL"
+          echo "PR_LABEL = $PR_LABEL"
           gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }}  --add-label "$PR_LABEL"
