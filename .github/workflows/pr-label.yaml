@@ -6,13 +6,6 @@ on:
     branches:
       - main
       - 'release-harvester-v*'
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       title:
-#         description: 'PR title'
-#         required: true
-#         type: string
 
 permissions:
   pull-requests: write
