@@ -1,0 +1,25 @@
+name: Build Standalone on PR Review with 'bug' Label
+
+on:
+  pull_request:
+    branches:
+      - '*'
+    types:
+      - labeled
+
+jobs:
+  build-validation:
+    name: Build Test
+    uses: ./.github/workflows/run-lint.yaml
+  build:
+    if: contains(github.event.pull_request.labels.*.name, 'bug')
+    name: Build and Upload Package
+    uses: ./.github/workflows/build-and-publish-standalone.yaml
+    needs:
+      - build-validation
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    with:
+      CI_BRANCH: ${{github.ref_name}}
