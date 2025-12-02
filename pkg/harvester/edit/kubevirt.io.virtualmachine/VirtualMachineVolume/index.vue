@@ -324,7 +324,7 @@ export default {
                 <a
                   v-if="dev && !!volume.pvc && !!volume.pvc.resourceExternalLink"
                   v-clean-tooltip="t(volume.pvc.resourceExternalLink.tipsKey || 'generic.resourceExternalLinkTips')"
-                  class="ml-5 resource-external"
+                  class="ml-10 mr-10 resource-external"
                   rel="nofollow noopener noreferrer"
                   target="_blank"
                   :href="volume.pvc.resourceExternalLink.url"
@@ -534,6 +534,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-left: 10px;
   }
 
   .banner {

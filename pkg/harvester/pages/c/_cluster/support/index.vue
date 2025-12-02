@@ -57,6 +57,7 @@ export default {
       const host = window.location.host;
       const prefix = window.location.pathname.replace(this.$route.path, '');
       const params = this.$route?.params;
+      console.log("🚀 ~ params:", params)
 
       return {
         host, prefix, params

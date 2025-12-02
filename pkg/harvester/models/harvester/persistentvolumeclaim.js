@@ -54,6 +54,13 @@ export default class HciPv extends HarvesterResource {
       label:   this.t('harvester.action.snapshot'),
     };
 
+    const editReplicasAction = {
+      action:  'editReplicas',
+      enabled: true,
+      icon:    'icon icon-edit',
+      label:   this.t('harvester.action.editReplicas'),
+    };
+
     if (this.thirdPartyStorageFeatureEnabled) { // v1.5.0
       out = [
         exportImageAction,
@@ -71,6 +78,7 @@ export default class HciPv extends HarvesterResource {
     }
 
     return [
+      editReplicasAction,
       {
         action:  'cancelExpand',
         enabled: this.hasAction('cancelExpand'),
@@ -79,6 +87,13 @@ export default class HciPv extends HarvesterResource {
       },
       ...out
     ];
+  }
+
+  editReplicas(resources = this) {
+    this.$dispatch('promptModal', {
+      resources,
+      component: 'editReplicasDialog'
+    });
   }
 
   exportImage(resources = this) {

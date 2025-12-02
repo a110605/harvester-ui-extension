@@ -70,6 +70,11 @@ harvester:
       tip: 'Upload an icon to replace the Harvester favicon in the browser tab. Max file size is 20KB'
   productLabel: 'Harvester'
   modal:
+    editReplicas:
+      title: Edit Replicas Count
+      replicas: Replicas
+      message:
+        success: 'Replicas for volume { name } updated successfully.'
     backup:
       success: 'Backup { backUpName } has been initiated.'
       addBackup: Add Backup
@@ -196,6 +201,7 @@ harvester:
       warning: Warning
       error: Error
   action:
+    editReplicas: Edit Replicas
     createVM: Create Virtual Machine
     start: Start
     restart: Restart
