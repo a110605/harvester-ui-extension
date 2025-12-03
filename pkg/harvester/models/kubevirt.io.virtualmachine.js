@@ -101,6 +101,12 @@ export default class VirtVm extends HarvesterResource {
 
     return [
       {
+        action:  'openSsh',
+        enabled: true,
+        icon:    'icon icon-chevron-right',
+        label:   'SSH Shell',
+      },
+      {
         action:     'stopVM',
         altAction:  'altStopVM',
         enabled:    !!this.actions?.stop,
@@ -292,6 +298,23 @@ export default class VirtVm extends HarvesterResource {
       this.metadata['labels'] = {};
       this['spec'] = spec;
     }
+  }
+
+  openSsh(name) {
+    const label = name || this.nameDisplay;
+    console.log('openSsh this=', this);
+    const machine = {
+      links:{
+        shell: "https://10.115.2.183/v1/cluster.x-k8s.io.machines/fleet-default/as-pool1-msphg-pvgg8/shell"
+      }
+    }
+    this.$dispatch('wm/open', {
+      id:        `${ this.id }-ssh`,
+      label,
+      icon:      'terminal',
+      component: 'MachineSsh',
+      attrs:     { machine, pod: {} }
+    }, { root: true });
   }
 
   cleanForNew() {
