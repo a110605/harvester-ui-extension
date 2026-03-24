@@ -3,7 +3,7 @@ import load from "@commitlint/load";
 
 if (process.argv.length < 3) {
   console.error('No PR title as first argument');
-  process.exit(1);
+  process.exit(2);
 }
 
 const prTitle = process.argv[2];
