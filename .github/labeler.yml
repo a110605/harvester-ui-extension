@@ -1,0 +1,7 @@
+# 根據 PR 標題的關鍵字自動上標籤
+bug:
+  title: ["^fix:", "^bug:"]
+feature:
+  title: ["^feat:"]
+documentation:
+  title: ["^docs:"]
