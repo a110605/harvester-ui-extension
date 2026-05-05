@@ -3,6 +3,7 @@ import startCase from 'lodash/startCase';
 import { HCI as HCI_ANNOTATIONS } from '../config/labels-annotations';
 import HarvesterResource from './harvester';
 import { HCI } from '../types';
+import { ADD_ONS } from '../config/harvester-map';
 
 export default class HciAddonConfig extends HarvesterResource {
   get availableActions() {
@@ -43,6 +44,15 @@ export default class HciAddonConfig extends HarvesterResource {
 
           return;
         }
+      }
+
+      if (!this.spec.enabled && this.metadata.name === ADD_ONS.NVIDIA_DRIVER_TOOLKIT_CONTROLLER) {
+        this.$dispatch('promptModal', {
+          resources:  [this],
+          component: 'EnableNvidiaDriverToolkit',
+        });
+
+        return;
       }
 
       this.spec.enabled = !this.spec.enabled;

@@ -1757,6 +1757,7 @@ harvester:
     nvidiaDriverToolkit:
       titles:
         basic: Controller
+        enable: Enable Nvidia Driver Toolkit
         image: Image
         driver: Driver
       image:
