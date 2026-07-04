@@ -526,8 +526,14 @@ export default class VirtVm extends HarvesterResource {
     });
   }
 
-  altPauseVM() {
-    this.doActionGrowl('pause', {});
+  async altPauseVM() {
+    await this.doActionGrowl('pause', {});
+    this.$dispatch('promptModal', {
+      performCallback:    true,
+      clearTableSelection: true,
+      action:             'pause',
+      resourceIds:        [this.id],
+    });
   }
 
   goToCloneVM(resources = this) {
@@ -552,17 +558,32 @@ export default class VirtVm extends HarvesterResource {
 
   async altRestartVM() {
     await this.doActionGrowl('restart', {});
-    this.$dispatch('promptModal', { performCallback: true, clearTableSelection: true });
+    this.$dispatch('promptModal', {
+      performCallback:    true,
+      clearTableSelection: true,
+      action:             'restart',
+      resourceIds:        [this.id],
+    });
   }
 
   async altStopVM() {
     await this.doActionGrowl('stop', {});
-    this.$dispatch('promptModal', { performCallback: true, clearTableSelection: true });
+    this.$dispatch('promptModal', {
+      performCallback:    true,
+      clearTableSelection: true,
+      action:             'stop',
+      resourceIds:        [this.id],
+    });
   }
 
   async forceStop() {
     await this.doActionGrowl('forceStop', {});
-    this.$dispatch('promptModal', { performCallback: true, clearTableSelection: true });
+    this.$dispatch('promptModal', {
+      performCallback:    true,
+      clearTableSelection: true,
+      action:             'forceStop',
+      resourceIds:        [this.id],
+    });
   }
 
   async startVM(resources = this) {
@@ -571,7 +592,12 @@ export default class VirtVm extends HarvesterResource {
     for (const r of list) {
       await r.doActionGrowl('start', {});
     }
-    this.$dispatch('promptModal', { performCallback: true, clearTableSelection: true });
+    this.$dispatch('promptModal', {
+      performCallback:    true,
+      clearTableSelection: true,
+      action:             'start',
+      resourceIds:        list.map((r) => r.id),
+    });
   }
 
   async download() {

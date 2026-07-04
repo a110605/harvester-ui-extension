@@ -109,7 +109,12 @@ export default {
           await resource.doActionGrowl(this.modalData.action, {});
         }
         buttonDone(true);
-        this.close({ performCallback: true, clearTableSelection: true });
+        this.close({
+          performCallback:    true,
+          clearTableSelection: true,
+          action:             this.modalData.action,
+          resourceIds:        this.resources.map((resource) => resource.id),
+        });
       } catch (e) {
         this.errors = exceptionToErrorsArray(e);
         buttonDone(false);

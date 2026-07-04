@@ -9,6 +9,7 @@ import {
 import { allHash } from '@shell/utils/promise';
 import Loading from '@shell/components/Loading';
 import { clone } from '@shell/utils/object';
+import PercentageBar from '@shell/components/PercentageBar';
 import { HCI } from '../types';
 import HarvesterVmState from '../formatters/HarvesterVmState';
 import ConsoleBar from '../components/VMConsoleBar';
@@ -67,6 +68,7 @@ export default {
   name:       'HarvesterListVM',
   components: {
     Loading,
+    PercentageBar,
     HarvesterVmState,
     ConsoleBar,
     ResourceTable
@@ -112,6 +114,8 @@ export default {
       allVMs:                       [],
       allVMIs:                      [],
       restartNotificationDisplayed: false,
+      actionProgressByVmId:         {},
+      progressTimersByVmId:         {},
       HCI
     };
   },
@@ -180,12 +184,22 @@ export default {
   },
 
   beforeUnmount() {
+    Object.values(this.progressTimersByVmId).forEach(({ intervalId, timeoutId }) => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    });
+    this.progressTimersByVmId = {};
+
     // clear restart message before component unmount
     this.$store.dispatch('growl/clear');
   },
 
   watch: {
     actionCb(neu) {
+      if (neu?.performCallback && this.shouldShowActionProgress(neu?.action) && Array.isArray(neu?.resourceIds)) {
+        this.startActionProgress(neu.resourceIds);
+      }
+
       if (neu?.clearTableSelection) {
         this.$refs.resourceTable.clearSelection();
         this.$store.dispatch('action-menu/clearCallbackData');
@@ -217,6 +231,66 @@ export default {
     }
   },
   methods: {
+    shouldShowActionProgress(action) {
+      const key = (action || '').toLowerCase();
+
+      return ['restart', 'stop', 'start', 'pause', 'forcestop'].includes(key);
+    },
+
+    startActionProgress(resourceIds = []) {
+      resourceIds.forEach((id) => {
+        if (!id) {
+          return;
+        }
+
+        const existingTimers = this.progressTimersByVmId[id];
+
+        if (existingTimers) {
+          clearInterval(existingTimers.intervalId);
+          clearTimeout(existingTimers.timeoutId);
+        }
+
+        const duration = 15000;
+        const startedAt = Date.now();
+
+        this.actionProgressByVmId[id] = 0;
+
+        const intervalId = setInterval(() => {
+          const elapsed = Date.now() - startedAt;
+          const nextValue = Math.min(100, Math.round((elapsed / duration) * 100));
+
+          this.actionProgressByVmId[id] = nextValue;
+
+          if (nextValue >= 100) {
+            clearInterval(intervalId);
+          }
+        }, 180);
+
+        const timeoutId = setTimeout(() => {
+          clearInterval(intervalId);
+          this.actionProgressByVmId[id] = 100;
+
+          const cleanupTimeoutId = setTimeout(() => {
+            delete this.actionProgressByVmId[id];
+            delete this.progressTimersByVmId[id];
+          }, 1200);
+
+          if (this.progressTimersByVmId[id]) {
+            this.progressTimersByVmId[id] = {
+              intervalId,
+              timeoutId: cleanupTimeoutId,
+            };
+          }
+        }, duration);
+
+        this.progressTimersByVmId[id] = { intervalId, timeoutId };
+      });
+    },
+
+    actionProgressValue(row) {
+      return this.actionProgressByVmId?.[row?.id];
+    },
+
     lockIconTooltipMessage(row) {
       const key = ENCRYPTED_VOLUME_TOOLTIP_KEYS[row.encryptedVolumeType];
 
@@ -239,10 +313,7 @@ export default {
       :groupable="true"
       key-field="_key"
     >
-      <template
-        #cell:state="scope"
-        class="state-col"
-      >
+      <template #cell:state="scope">
         <div class="state">
           <HarvesterVmState
             class="vmstate"
@@ -253,25 +324,41 @@ export default {
 
       <template #cell:name="scope">
         <div class="name-console">
-          <router-link
-            v-if="scope.row.type !== HCI.VMI"
-            :to="scope.row.detailLocation"
-          >
-            {{ scope.row.nameDisplay }}
-            <i
-              v-if="scope.row.encryptedVolumeType !== 'none'"
-              v-tooltip="lockIconTooltipMessage(scope.row)"
-              class="icon icon-lock"
-              :class="{'green-icon': scope.row.encryptedVolumeType === 'all', 'yellow-icon': scope.row.encryptedVolumeType === 'partial'}"
+          <div class="name-wrap">
+            <router-link
+              v-if="scope.row.type !== HCI.VMI"
+              :to="scope.row.detailLocation"
+            >
+              {{ scope.row.nameDisplay }}
+              <i
+                v-if="scope.row.encryptedVolumeType !== 'none'"
+                v-tooltip="lockIconTooltipMessage(scope.row)"
+                class="icon icon-lock"
+                :class="{'green-icon': scope.row.encryptedVolumeType === 'all', 'yellow-icon': scope.row.encryptedVolumeType === 'partial'}"
+              />
+            </router-link>
+            <span v-else>
+              {{ scope.row.nameDisplay }}
+            </span>
+          </div>
+
+          <div class="name-actions">
+            <div
+              v-if="actionProgressValue(scope.row) !== undefined"
+              class="action-progress"
+            >
+              <PercentageBar
+                :model-value="actionProgressValue(scope.row)"
+                preferred-direction="MORE"
+                class="action-progress-bar"
+              />
+              <span class="progress-text text-muted">{{ actionProgressValue(scope.row) }}%</span>
+            </div>
+            <ConsoleBar
+              :resource-type="scope.row"
+              class="console ml-6 mr-6"
             />
-          </router-link>
-          <span v-else>
-            {{ scope.row.nameDisplay }}
-          </span>
-          <ConsoleBar
-            :resource-type="scope.row"
-            class="console mr-10 ml-10"
-          />
+          </div>
         </div>
       </template>
     </ResourceTable>
@@ -305,6 +392,45 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+
+  .name-wrap {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+
+    a,
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .name-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    min-width: 220px;
+    gap: 6px;
+
+    .action-progress {
+      width: 120px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .action-progress-bar {
+        flex: 1;
+      }
+
+      .progress-text {
+        min-width: 36px;
+        text-align: right;
+        font-size: 12px;
+      }
+    }
+  }
 
   span {
     padding-right: 4px;
