@@ -4,11 +4,17 @@ import jsyaml from 'js-yaml';
 import { LabeledInput } from '@components/Form/LabeledInput';
 import { RadioGroup } from '@components/Form/Radio';
 
-const DEFAUL_VALUE = {
-  rancher: {
+const DEFAULT_VALUE = {
+  certManagerVersion: 'v1.20.2',
+  rancher:            {
     hostname:          '',
     version:           '',
     bootstrapPassword: '',
+  },
+  k3kCluster: {
+    servers:          1,
+    version:          'v1.35.4-k3s1',
+    storageClassName: 'harvester-longhorn',
   },
 };
 
@@ -38,9 +44,9 @@ export default {
     let valuesContentJson = {};
 
     try {
-      valuesContentJson = merge({}, DEFAUL_VALUE, jsyaml.load(this.value.spec.valuesContent));
+      valuesContentJson = merge({}, DEFAULT_VALUE, jsyaml.load(this.value.spec.valuesContent));
     } catch (err) {
-      valuesContentJson = DEFAUL_VALUE;
+      valuesContentJson = DEFAULT_VALUE;
 
       this.$store.dispatch('growl/fromError', {
         title: this.$store.getters['i18n/t']('generic.notification.title.error'),
